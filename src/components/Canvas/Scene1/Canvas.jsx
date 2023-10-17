@@ -1,12 +1,11 @@
-import { useRef, useEffect, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   useGLTF,
   useTexture,
   AccumulativeShadows,
   RandomizedLight,
   Decal,
-  Environment,
   Center,
   Float,
   AdaptiveEvents,
@@ -16,38 +15,44 @@ import {
 import { easing } from "maath";
 import { useSnapshot } from "valtio";
 import { state } from "./store";
-import { memo } from "react";
-
+import { Overlay } from "./Overlay";
+import { memo, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Items as Scene2 } from "../Scene2/App";
+import { transform, useSpring } from "framer-motion";
 
-export const App = memo(({ position = [0, 0, 2.5], fov = 25 }) => {
-  const currentSection = useSelector((state) => state.currentSection.Section);
-  const section2part = useSelector((state) => state.section2.part);
-  const [part, setPart] = useState(-1);
+const BgController = () => {
+  const themeMode = useSelector((state) => state.theme.mode);
+  const transformer = transform([0, 1], [0, 1], { clamp: true });
+  const { gl } = useThree();
+  const spring = useSpring(transformer(themeMode !== "light"), {
+    stiffness: 20,
+    damping: 10,
+  });
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setPart(section2part);
-    }, 1000);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [section2part]);
+    spring.set(transformer(themeMode === "light"));
+  }, [themeMode]);
+
+  useFrame((delta) => {
+    gl.setClearColor(0xffffff, spring.get());
+  });
+  return null;
+};
+
+export const Scene1 = memo(({ position = [0, 0, 2.5], fov = 25 }) => {
   return (
     <>
       <Canvas
         className="canvas"
         style={{
-          zIndex: `${
-            currentSection !== 2 ? -1 : section2part === 0 ? 99 : 999
-          }`,
           position: "fixed",
           top: 0,
           left: 0,
+          background: "#303035",
         }}
         shadows
         camera={{ position, fov }}
-        gl={{ preserveDrawingBuffer: true, antialias: false }}
+        gl={{ preserveDrawingBuffer: true }}
         // onPointerMissed={() => (imgState.clicked = null)}
         // eventSource={document.getElementById("root")}
         // eventPrefix="client"
@@ -56,26 +61,27 @@ export const App = memo(({ position = [0, 0, 2.5], fov = 25 }) => {
       >
         <ambientLight intensity={0.5} />
         <directionalLight intensity={0.5} position={[3, 3, 3]} />
-        <Bvh firstHitOnly>
-          {currentSection === 2 && (
-            <>
-              {part === 0 && (
-                <>
-                  <CameraRig>
-                    <Center>
-                      <Shirt />
-                    </Center>
-                  </CameraRig>
-                </>
-              )}
-              {part === 1 && <Scene2 />}
-            </>
-          )}
-        </Bvh>
+        {/* <color attach="background" args={["#303035"]} /> */}
+        <Backdrop />
+        <BgController />
+        <CameraRig>
+          <Center>
+            <Shirt />
+          </Center>
+        </CameraRig>
+        {/* <ContactShadows
+          position={[0, -0.4, 0]}
+          opacity={1}
+          scale={7}
+          blur={1.5}
+        /> */}
+        {/* <OrbitControls default /> */}
+        <Bvh firstHitOnly></Bvh>
         <AdaptiveDpr pixelated />
         <AdaptiveEvents />
         {/* </Suspense> */}
       </Canvas>
+      <Overlay />
       {/* <Loader /> */}
     </>
   );

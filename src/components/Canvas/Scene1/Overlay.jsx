@@ -4,15 +4,12 @@ import {
   AiFillCamera,
   AiOutlineArrowLeft,
   AiOutlineHighlight,
-  AiOutlineShopping,
 } from "react-icons/ai";
 import { useSnapshot } from "valtio";
 import { state } from "./store";
-import { useSelector } from "react-redux";
+import "./styles.css";
 
 export function Overlay() {
-  const currentSection = useSelector((state) => state.currentSection.Section);
-  const section2part = useSelector((state) => state.section2.part);
   const snap = useSnapshot(state);
   const transition = { type: "spring", duration: 0.4 };
   const transition2 = { type: "spring", duration: 0.4 };
@@ -38,7 +35,6 @@ export function Overlay() {
         left: 0,
         width: "100%",
         height: "100%",
-        zIndex: `${currentSection !== 2 ? -1 : section2part === 0 ? 99 : 9}`,
         // transition: "all 0.4s ease-in-out",
       }}
     >
@@ -59,70 +55,74 @@ export function Overlay() {
           <AiOutlineShopping size="3em" />
         </motion.div>
       </motion.header> */}
-      {section2part === 0 && currentSection === 2 && (
-        <AnimatePresence mode={"wait"}>
-          {snap.intro ? (
-            <motion.section key="main" {...config} className="canvasOverlay">
-              <div className="canvasOverlay--container">
+      <AnimatePresence mode={"wait"}>
+        {snap.intro ? (
+          <motion.section key="main" {...config} className="canvasOverlay">
+            <div className="canvasOverlay--container">
+              <motion.div
+                key="title"
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{
+                  type: "spring",
+                  damping: 5,
+                  stiffness: 40,
+                  restDelta: 0.001,
+                  duration: 0.3,
+                }}
+              >
+                <h1
+                  style={
+                    {
+                      // WebkitTextFillColor: "transparent",
+                      // WebkitTextStrokeWidth: "3px",
+                    }
+                  }
+                >
+                  LET'S DO IT.
+                </h1>
+                {/* <h1 data-text="LET'S DO IT">
+                  <span>LET'S DO IT</span>
+                </h1> */}
+              </motion.div>
+              <div className="support--content">
                 <motion.div
-                  key="title"
-                  initial={{ x: 100, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
+                  key="p"
+                  initial={{ y: 100, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
                   transition={{
                     type: "spring",
-                    damping: 5,
-                    stiffness: 40,
+                    damping: 7,
+                    stiffness: 30,
                     restDelta: 0.001,
-                    duration: 0.3,
+                    duration: 0.6,
+                    delay: 0.2,
+                    delayChildren: 0.2,
                   }}
                 >
-                  <h1
-                    style={{
-                      WebkitTextFillColor: "transparent",
-                      WebkitTextStrokeWidth: "3px",
-                    }}
+                  <p>
+                    Create your unique and exclusive shirt with our brand-new 3D
+                    customization tool.{" "}
+                    <strong>Unleash your imagination</strong> and define your
+                    own style.
+                  </p>
+                  <button
+                    style={{ background: snap.color }}
+                    onClick={() => (state.intro = false)}
+                    className="btn"
                   >
-                    LET'S DO IT.
-                  </h1>
+                    CUSTOMIZE IT <AiOutlineHighlight size="1.3em" />
+                  </button>
                 </motion.div>
-                <div className="support--content">
-                  <motion.div
-                    key="p"
-                    initial={{ y: 100, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{
-                      type: "spring",
-                      damping: 7,
-                      stiffness: 30,
-                      restDelta: 0.001,
-                      duration: 0.6,
-                      delay: 0.2,
-                      delayChildren: 0.2,
-                    }}
-                  >
-                    <p>
-                      Create your unique and exclusive shirt with our brand-new
-                      3D customization tool.{" "}
-                      <strong>Unleash your imagination</strong> and define your
-                      own style.
-                    </p>
-                    <button
-                      style={{ background: snap.color }}
-                      onClick={() => (state.intro = false)}
-                    >
-                      CUSTOMIZE IT <AiOutlineHighlight size="1.3em" />
-                    </button>
-                  </motion.div>
-                </div>
               </div>
-            </motion.section>
-          ) : (
-            <motion.section key="custom" {...config2}>
-              <Customizer />
-            </motion.section>
-          )}
-        </AnimatePresence>
-      )}
+            </div>
+          </motion.section>
+        ) : (
+          <motion.section key="custom" {...config2}>
+            <Customizer />
+          </motion.section>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -155,7 +155,7 @@ function Customizer() {
         </div>
       </div>
       <button
-        className="share"
+        className={"share btn"}
         style={{ background: snap.color }}
         onClick={() => {
           const link = document.createElement("a");

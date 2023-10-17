@@ -18,19 +18,24 @@ import Stars from "./Stars";
 import Sun from "./Sun";
 import Moon from "./Moon";
 import { useSelector } from "react-redux";
+import { Link, Outlet } from "react-router-dom";
+import { toggleQuality } from "../../Features/globalUiVars/quality";
+import AppShortcutIcon from "@mui/icons-material/AppShortcut";
+import { useDispatch } from "react-redux";
 
 const AppBarE = styled(AppBar)(({ theme }) => ({
   background: `${
     theme.palette.mode === "light"
-      ? alpha(theme.palette.primary.light, 0.7)
-      : alpha(theme.palette.primary.dark, 0.7)
+      ? alpha("#2979ff", 0.6)
+      : alpha(theme.palette.primary.dark, 0.3)
   }`,
 }));
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = ["Configurator", "Gallery", "Terms"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const ResponsiveAppBar = () => {
+  const dispatch = useDispatch();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -74,7 +79,17 @@ const ResponsiveAppBar = () => {
         // sx={{ backdropFilter: "blur(1px)" }}
       >
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
+          <img
+            className="logo"
+            src="/LR_fill_2.png"
+            alt="brand"
+            style={{
+              width: "30px",
+              height: "30px",
+              marginRight: "20px",
+            }}
+          />
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -105,9 +120,11 @@ const ResponsiveAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+                <Link key={page} to={`${page === "Configurator" ? "/" : page}`}>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>
@@ -133,22 +150,34 @@ const ResponsiveAppBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
+              <Link key={page} to={`${page === "Configurator" ? "/" : page}`}>
+                <Button
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  {page}
+                </Button>
+              </Link>
             ))}
           </Box>
+          <Outlet />
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="" />
-              </IconButton>
-            </Tooltip>
+            <IconButton
+              sx={{
+                position: "fixed",
+                zIndex: "999999",
+                right: "1%",
+                bottom: { xs: "3%", md: "4.5%" },
+              }}
+              aria-label="quality"
+              onClick={(e) => dispatch(toggleQuality())}
+            >
+              <AppShortcutIcon
+                sx={{ fontSize: { xs: "2rem", md: "2.5rem" } }}
+              />
+            </IconButton>
 
             <Menu
               sx={{ mt: "45px" }}

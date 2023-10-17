@@ -1,13 +1,17 @@
 import * as THREE from "three";
 import { useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Image, ScrollControls, Scroll, useScroll } from "@react-three/drei";
+import {
+  Image,
+  ScrollControls,
+  Scroll,
+  useScroll,
+  useTexture,
+} from "@react-three/drei";
 import { proxy, useSnapshot } from "valtio";
-import { imgState } from "./store";
-import { useTexture } from "@react-three/drei";
-
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { easing } from "maath";
+import { transform, useSpring } from "framer-motion";
 
 const damp = THREE.MathUtils.damp;
 const material = new THREE.LineBasicMaterial({ color: "white" });
@@ -15,15 +19,36 @@ const geometry = new THREE.BufferGeometry().setFromPoints([
   new THREE.Vector3(0, -0.5, 0),
   new THREE.Vector3(0, 0.5, 0),
 ]);
-// const state = proxy({
-//   clicked: null,
-//   urls: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 5, 7, 8, 2, 4, 9, 6].map((u) => `/${u}.jpg`)
-// })
+const state = proxy({
+  clicked: null,
+  urls: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 5, 7, 8, 2, 4, 9, 6].map(
+    (u) => `/${u}.jpg`
+  ),
+});
+
+const BgController = () => {
+  const themeMode = useSelector((state) => state.theme.mode);
+  const transformer = transform([0, 1], [0, 1], { clamp: true });
+  const { gl } = useThree();
+  const spring = useSpring(transformer(themeMode !== "light"), {
+    stiffness: 20,
+    damping: 10,
+  });
+
+  useEffect(() => {
+    spring.set(transformer(themeMode === "light"));
+  }, [themeMode]);
+
+  useFrame((delta) => {
+    gl.setClearColor(0xffffff, spring.get());
+  });
+  return null;
+};
 
 function Minimap() {
   const ref = useRef();
   const scroll = useScroll();
-  const { urls } = useSnapshot(imgState);
+  const { urls } = useSnapshot(state);
   const { height } = useThree((state) => state.viewport);
   useFrame((state, delta) => {
     ref.current.children.forEach((child, index) => {
@@ -38,6 +63,7 @@ function Minimap() {
       child.scale.y = damp(child.scale.y, 0.1 + y / 6, 8, 8, delta);
     });
   });
+  const themeMode = useSelector((state) => state.theme.mode);
   return (
     <group ref={ref}>
       {urls.map((_, i) => (
@@ -45,7 +71,8 @@ function Minimap() {
           key={i}
           geometry={geometry}
           material={material}
-          position={[i * 0.06 - urls.length * 0.03, -height / 0.3 + 0.6, -12]}
+          position={[i * 0.06 - urls.length * 0.03, -height / 2 + 0.6, 0]}
+          material-color={`${themeMode === "light" ? "black" : "white"}`}
         />
       ))}
     </group>
@@ -55,9 +82,9 @@ function Minimap() {
 function Item({ index, position, scale, c = new THREE.Color(), ...props }) {
   const ref = useRef();
   const scroll = useScroll();
-  const { clicked, urls } = useSnapshot(imgState);
+  const { clicked, urls } = useSnapshot(state);
   const [hovered, hover] = useState(false);
-  const click = () => (imgState.clicked = index === clicked ? null : index);
+  const click = () => (state.clicked = index === clicked ? null : index);
   const over = () => hover(true);
   const out = () => hover(false);
   useFrame((state, delta) => {
@@ -73,21 +100,21 @@ function Item({ index, position, scale, c = new THREE.Color(), ...props }) {
     );
     ref.current.material.scale[0] = ref.current.scale.x = damp(
       ref.current.scale.x,
-      clicked === index ? 3.5 : scale[0],
+      clicked === index ? 4.7 : scale[0],
       6,
       delta
     );
     if (clicked !== null && index < clicked)
       ref.current.position.x = damp(
         ref.current.position.x,
-        position[0] - 1.5,
+        position[0] - 2,
         6,
         delta
       );
     if (clicked !== null && index > clicked)
       ref.current.position.x = damp(
         ref.current.position.x,
-        position[0] + 1.5,
+        position[0] + 2,
         6,
         delta
       );
@@ -108,19 +135,12 @@ function Item({ index, position, scale, c = new THREE.Color(), ...props }) {
       c.set(hovered || clicked === index ? "white" : "#aaa"),
       hovered ? 0.3 : 0.1
     );
-    section2part === 1 &&
-      easing.damp(ref.current.position, "y", 0, 0.25, delta);
-    section2part !== 1 &&
-      easing.damp(ref.current.position, "y", 10, 0.25, delta);
-    // console.log(ref.current.material);
   });
-  const section2part = useSelector((state) => state.section2.part);
   return (
     <Image
       ref={ref}
       {...props}
       position={position}
-      position-y={10}
       scale={scale}
       onClick={click}
       onPointerOver={over}
@@ -129,52 +149,33 @@ function Item({ index, position, scale, c = new THREE.Color(), ...props }) {
   );
 }
 
-export function Items({ w = 0.7, gap = 0.15 }) {
-  const { urls } = useSnapshot(imgState);
+function Items({ w = 0.7, gap = 0.15 }) {
+  const { urls } = useSnapshot(state);
   const { width } = useThree((state) => state.viewport);
   const xW = w + gap;
   return (
     <ScrollControls
       horizontal
-      damping={0.2}
+      damping={0.1}
       pages={(width - xW + urls.length * xW) / width}
-      distance={0.2}
     >
       <Minimap />
       <Scroll>
         {
-          urls.map((url, i) => <Item key={i} index={i} position={[i * xW, 0, -16]} scale={[w, 4, 1]} url={url} />) /* prettier-ignore */
+          urls.map((url, i) => <Item key={i} index={i} position={[i * xW, 0, 0]} scale={[w, 4, 1]} url={url} />) /* prettier-ignore */
         }
       </Scroll>
     </ScrollControls>
   );
 }
 
-export const App = () => {
-  const [visible, setVisible] = useState(true);
-  return (
-    <Canvas
-      gl={{ antialias: false }}
-      dpr={[1, 1.5]}
-      onPointerMissed={() => (imgState.clicked = null)}
-      style={{ zIndex: 9, position: "fixed", top: "0", left: "0" }}
-    >
-      {visible && <Items />}
-    </Canvas>
-  );
-};
-
-[
-  "/1.jpg",
-  "/2.jpg",
-  "/3.jpg",
-  "/4.jpg",
-  "/5.jpg",
-  "/6.jpg",
-  "/7.jpg",
-  "/8.jpg",
-  "/9.jpg",
-  "/10.jpg",
-  "/11.jpg",
-  "/12.jpg",
-].forEach(useTexture.preload);
+export const Scene2 = () => (
+  <Canvas
+    gl={{ antialias: false }}
+    dpr={[1, 1.5]}
+    onPointerMissed={() => (state.clicked = null)}
+  >
+    <Items />
+    <BgController />
+  </Canvas>
+);
