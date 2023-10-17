@@ -28,7 +28,7 @@ body::-webkit-scrollbar {
 body {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-  cursor: url("../public/cursor.png") 32 32, auto;
+  cursor: url("/cursor.png") 32 32, auto;
   overscroll-behavior: "none";
 }
 /* Hide scrollbar for IE, Edge add Firefox */
@@ -43,12 +43,3 @@ body {
   --tShadow: calc((var(--cWidth)-50px) * -1);
   --bColor: #0f0;
 }
-/* @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
-} */

@@ -153,20 +153,11 @@ function Shirt(props) {
   const { nodes, materials } = useGLTF("/shirt_baked_collapsed.glb");
   useFrame((state, delta) => {
     easing.dampC(materials.lambert1.color, snap.color, 0.25, delta);
-    section2part === 0 &&
-      easing.damp(tShirt.current.material, "opacity", 1, 0.25, delta) &&
-      easing.damp(decal.current.material, "opacity", 1, 0.25, delta);
-    section2part !== 0 &&
-      easing.damp(tShirt.current.material, "opacity", 0, 0.25, delta) &&
-      easing.damp(decal.current.material, "opacity", 0, 0.25, delta);
-    // console.log(tShirt.current.material.opacity);
-    // console.log(decal.current);
   });
-  const currentSection = useSelector((state) => state.currentSection.Section);
-  const section2part = useSelector((state) => state.section2.part);
+
   return (
     <Float
-      speed={1} // Animation speed, defaults to 1
+      speed={1.5} // Animation speed, defaults to 1
       rotationIntensity={1} // XYZ rotation intensity, defaults to 1
       floatIntensity={0.1} // Up/down float intensity, works like a multiplier with floatingRange,defaults to 1
       // floatingRange={[1, 10]} // Range of y-axis values the object will float within, defaults to [-0.1,0.1]

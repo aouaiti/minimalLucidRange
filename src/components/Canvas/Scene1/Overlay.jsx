@@ -38,31 +38,14 @@ export function Overlay() {
         // transition: "all 0.4s ease-in-out",
       }}
     >
-      {/* <motion.header
-        initial={{ opacity: 0, y: -100 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={transition}
-      >
-        <img
-          src="LR_fill.png"
-          style={{ width: "35px", height: "35px" }}
-          alt="logo"
-        />
-        <motion.div
-          animate={{ x: snap.intro ? 0 : 100, opacity: snap.intro ? 1 : 0 }}
-          transition={transition}
-        >
-          <AiOutlineShopping size="3em" />
-        </motion.div>
-      </motion.header> */}
       <AnimatePresence mode={"wait"}>
         {snap.intro ? (
           <motion.section key="main" {...config} className="canvasOverlay">
             <div className="canvasOverlay--container">
               <motion.div
                 key="title"
-                initial={{ x: 100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
+                // initial={{ x: 100, opacity: 1 }}
+                // animate={{ x: 100, opacity: 1 }}
                 transition={{
                   type: "spring",
                   damping: 5,
@@ -88,8 +71,8 @@ export function Overlay() {
               <div className="support--content">
                 <motion.div
                   key="p"
-                  initial={{ y: 100, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
+                  // initial={{ y: 100, opacity: 0 }}
+                  // animate={{ y: 0, opacity: 1 }}
                   transition={{
                     type: "spring",
                     damping: 7,
