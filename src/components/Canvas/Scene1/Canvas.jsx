@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   useGLTF,
@@ -52,34 +52,28 @@ export const Scene1 = memo(({ position = [0, 0, 2.5], fov = 25 }) => {
         }}
         shadows
         camera={{ position, fov }}
-        gl={{ preserveDrawingBuffer: true }}
+        // gl={{ preserveDrawingBuffer: true }}
         // onPointerMissed={() => (imgState.clicked = null)}
-        // eventSource={document.getElementById("root")}
-        // eventPrefix="client"
+        eventSource={document.getElementById("root")}
+        eventPrefix="client"
         // gl={{ antialias: false }}
-        dpr={[1, 1.5]}
+        // dpr={[1, 1.5]}
       >
         <ambientLight intensity={0.5} />
         <directionalLight intensity={0.5} position={[3, 3, 3]} />
         {/* <color attach="background" args={["#303035"]} /> */}
-        <Backdrop />
-        <BgController />
-        <CameraRig>
-          <Center>
-            <Shirt />
-          </Center>
-        </CameraRig>
-        {/* <ContactShadows
-          position={[0, -0.4, 0]}
-          opacity={1}
-          scale={7}
-          blur={1.5}
-        /> */}
-        {/* <OrbitControls default /> */}
+        <Suspense fallback={null}>
+          <Backdrop />
+          <BgController />
+          <CameraRig>
+            <Center>
+              <Shirt />
+            </Center>
+          </CameraRig>
+        </Suspense>
         <Bvh firstHitOnly></Bvh>
         <AdaptiveDpr pixelated />
         <AdaptiveEvents />
-        {/* </Suspense> */}
       </Canvas>
       <Overlay />
       {/* <Loader /> */}

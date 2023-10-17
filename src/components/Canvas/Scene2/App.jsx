@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { useRef, useState } from "react";
+import { useRef, useState, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   Image,
@@ -175,7 +175,9 @@ export const Scene2 = () => (
     dpr={[1, 1.5]}
     onPointerMissed={() => (state.clicked = null)}
   >
-    <Items />
+    <Suspense fallback={null}>
+      <Items />
+    </Suspense>
     <BgController />
   </Canvas>
 );

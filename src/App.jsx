@@ -17,28 +17,26 @@ import {
 export default function App() {
   return (
     <>
-      <Suspense fallback={null}>
-        <Box id="main">
-          <Box
-            component={motion.div}
-            style={{
-              transformOrigin: "top",
-              height: "100vh",
-            }}
-          >
-            {/* <RouterProvider router={router} /> */}
-            <BrowserRouter>
-              <ApplicationBar />
-              <Routes>
-                {/* <Route path="/" element={<ApplicationBar />} /> */}
-                <Route path="/" index element={<Scene1 />} />
-                <Route path="/Gallery" element={<Scene2 />} />
-                <Route path="/Terms" element={<Terms />} />
-              </Routes>
-            </BrowserRouter>
-          </Box>
+      <Box id="main">
+        <Box
+          component={motion.div}
+          style={{
+            transformOrigin: "top",
+            height: "100vh",
+          }}
+        >
+          {/* <RouterProvider router={router} /> */}
+          <BrowserRouter>
+            <ApplicationBar />
+            <Routes>
+              {/* <Route path="/" element={<ApplicationBar />} /> */}
+              <Route path="/" index element={<Scene1 />} />
+              <Route path="/Gallery" element={<Scene2 />} />
+              <Route path="/Terms" element={<Terms />} />
+            </Routes>
+          </BrowserRouter>
         </Box>
-      </Suspense>
+      </Box>
       <Loader />
     </>
   );
