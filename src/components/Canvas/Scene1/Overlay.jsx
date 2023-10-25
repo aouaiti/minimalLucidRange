@@ -8,6 +8,7 @@ import {
 import { useSnapshot } from "valtio";
 import { state } from "./store";
 import "./styles.css";
+import { useState } from "react";
 
 export function Overlay() {
   const snap = useSnapshot(state);
@@ -112,6 +113,8 @@ export function Overlay() {
 
 function Customizer() {
   const snap = useSnapshot(state);
+  const scrolls = [240, 480, -600, -800];
+  const [scroll, setScroll] = useState(0);
   return (
     <div className="customizer">
       <div className="color-options">
@@ -125,16 +128,46 @@ function Customizer() {
         ))}
       </div>
       <div className="decals">
-        <div className="decals--container">
+        <div
+          style={{
+            position: "absolute",
+            top: "25%",
+            cursor: "pointer",
+            zIndex: "99",
+          }}
+          onClick={(e) => {
+            scroll === 0 ? setScroll(0) : setScroll((scroll - 1) % 4);
+          }}
+        >
+          fleshe haut
+        </div>
+        <div
+          className="decals--container"
+          style={{ transform: `translateY(${scrolls[scroll]}px)` }}
+        >
           {snap.decals.map((decal) => (
             <div
               key={decal}
               className={`decal`}
               onClick={() => (state.decal = decal)}
             >
-              <img src={decal + "_thumb.png"} alt="brand" />
+              {/* <img src={decal + "_thumb.png"} alt="brand" /> */}
+              <img src={decal + ".png"} alt="brand" />
             </div>
           ))}
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            top: "75%",
+            cursor: "pointer",
+            zIndex: "99",
+          }}
+          onClick={(e) => {
+            scroll === 3 ? setScroll(3) : setScroll((scroll + 1) % 4);
+          }}
+        >
+          fleshe bas
         </div>
       </div>
       <button

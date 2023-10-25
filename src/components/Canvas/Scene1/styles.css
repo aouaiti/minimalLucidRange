@@ -243,6 +243,10 @@ button {
   top: 50%;
   left: 40px;
   transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
 }
 
 .decals p {
@@ -296,6 +300,11 @@ button {
   display: flex;
   gap: 20px;
   flex-direction: column;
+  transition: all 1s ease-in;
+  -webkit-transition: all 1s ease-in;
+  -moz-transition: all 1s ease-in;
+  -ms-transition: all 1s ease-in;
+  -o-transition: all 1s ease-in;
 }
 
 .exit {

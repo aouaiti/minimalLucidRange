@@ -171,7 +171,7 @@ function Shirt(props) {
           ref={decal}
           position={[0, 0.04, 0.15]}
           rotation={[0, 0, 0]}
-          scale={0.15}
+          scale={0.25}
           map={texture}
           map-anisotropy={16}
           transparent={true}
@@ -184,6 +184,18 @@ function Shirt(props) {
 }
 
 useGLTF.preload("/shirt_baked_collapsed.glb");
-["/react.png", "/three2.png", "/LR_fill_2.png", "/LR_back_2.png"].forEach(
-  useTexture.preload
-);
+[
+  "/1.png",
+  "/2.png",
+  "/3.png",
+  "/4.png",
+  "/5.png",
+  "/6.png",
+  "/7.png",
+  "/8.png",
+  "/9.png",
+  "/10.png",
+  "/11.png",
+  "/12.png",
+  "/13.png",
+].forEach(useTexture.preload);
