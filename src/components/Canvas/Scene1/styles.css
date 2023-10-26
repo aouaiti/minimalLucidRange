@@ -257,15 +257,19 @@ button {
 
 .decals img {
   width: 24px;
-  filter: saturate(0) invert(1) brightness(5.5);
   transition: all 0.2s ease-in-out;
-  -webkit-filter: saturate(0) invert(1) brightness(5.5);
+  /* filter: saturate(0) invert(1) brightness(5.5);
+  -webkit-filter: saturate(0) invert(1) brightness(5.5); */
 }
 
 .decals img:hover {
   filter: none;
   transform: scale(1.2);
   cursor: pointer;
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  -o-transform: scale(1.2);
 }
 
 .decals--position {

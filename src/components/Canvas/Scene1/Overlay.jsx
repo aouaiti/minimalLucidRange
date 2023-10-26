@@ -9,6 +9,11 @@ import { useSnapshot } from "valtio";
 import { state } from "./store";
 import "./styles.css";
 import { useState } from "react";
+import IconButton from "@mui/material/IconButton";
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
+import { useSelector } from "react-redux";
+import { InvertStencilOp } from "three";
 
 export function Overlay() {
   const snap = useSnapshot(state);
@@ -112,8 +117,9 @@ export function Overlay() {
 }
 
 function Customizer() {
+  const themeMode = useSelector((state) => state.theme.mode);
   const snap = useSnapshot(state);
-  const scrolls = [240, 480, -600, -800];
+  const scrolls = [0, -310, -610];
   const [scroll, setScroll] = useState(0);
   return (
     <div className="customizer">
@@ -130,44 +136,60 @@ function Customizer() {
       <div className="decals">
         <div
           style={{
-            position: "absolute",
-            top: "25%",
             cursor: "pointer",
-            zIndex: "99",
+            marginLeft: "-7px",
+            marginBottom: "10px",
           }}
           onClick={(e) => {
-            scroll === 0 ? setScroll(0) : setScroll((scroll - 1) % 4);
+            scroll === 0 ? setScroll(0) : setScroll(scroll - 1);
           }}
         >
-          fleshe haut
+          <IconButton aria-label="delete">
+            <KeyboardDoubleArrowUpIcon />
+          </IconButton>
         </div>
         <div
           className="decals--container"
-          style={{ transform: `translateY(${scrolls[scroll]}px)` }}
+          style={{
+            height: "305px",
+            overflow: "hidden",
+          }}
         >
           {snap.decals.map((decal) => (
             <div
               key={decal}
               className={`decal`}
               onClick={() => (state.decal = decal)}
+              style={{
+                transform: `translateY(${scrolls[scroll]}px)`,
+                transition: "all 1.2s ease-out",
+              }}
             >
               {/* <img src={decal + "_thumb.png"} alt="brand" /> */}
-              <img src={decal + ".png"} alt="brand" />
+              <img
+                src={decal + ".png"}
+                alt="brand"
+                style={{
+                  color: "white",
+                  filter: `invert(${themeMode === "light" ? 1 : 0})`,
+                }}
+              />
             </div>
           ))}
         </div>
         <div
           style={{
-            position: "absolute",
-            top: "75%",
             cursor: "pointer",
-            zIndex: "99",
+            marginLeft: "-7px",
+            marginTop: "10px",
           }}
           onClick={(e) => {
-            scroll === 3 ? setScroll(3) : setScroll((scroll + 1) % 4);
+            scroll === 2 ? setScroll(3) : setScroll(scroll + 1);
           }}
         >
-          fleshe bas
+          <IconButton aria-label="delete">
+            <KeyboardDoubleArrowDownIcon />
+          </IconButton>
         </div>
       </div>
       <button
