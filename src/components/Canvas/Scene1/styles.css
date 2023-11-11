@@ -113,7 +113,8 @@ header p.hidden {
 }
 
 .support--content p {
-  width: 350px;
+  margin-right:20px;
+  width: 300px;
   margin-bottom: 48px;
   line-height: 1.5rem;
 }
