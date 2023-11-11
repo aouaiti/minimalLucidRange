@@ -79,7 +79,7 @@ const TermsAndConditions = () => {
         <h2>6. Contact Information</h2>
         <p>
           6.1. For inquiries, questions, or concerns regarding these Terms or
-          our services, please contact us at [contact email].
+          our services, please contact us at contact@wordpunz.com.
         </p>
       </div>
 
