@@ -82,7 +82,7 @@ const ResponsiveAppBar = () => {
           {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
           <img
             className="logo"
-            src="/LR_fill_2.png"
+            src="/WP.png"
             alt="brand"
             style={{
               width: "30px",
